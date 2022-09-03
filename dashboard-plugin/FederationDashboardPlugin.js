@@ -13,9 +13,16 @@ const webpack = require("webpack");
 /** @typedef {import('webpack/lib/Compiler')} Compiler */
 
 /**
+ * @typedef ModuleFederationPluginFilter
+ * @property {string} remoteName
+ */
+
+/**
  * @typedef FederationDashboardPluginOptions
  * @property {string} filename
  * @property {function} reportFunction
+ * @property {ModuleFederationPluginFilter} moduleFederationFilter;
+ *
  */
 
 const PLUGIN_NAME = "FederationDashboardPlugin";
@@ -27,7 +34,12 @@ class FederationDashboardPlugin {
    */
   constructor(options) {
     this._options = Object.assign(
-      { debug: false, filename: "dashboard.json", useAST: false },
+      {
+        debug: false,
+        filename: "dashboard.json",
+        useAST: false,
+        moduleFederationPluginFilter: undefined,
+      },
       options
     );
     this._dashData = null;
@@ -38,9 +50,9 @@ class FederationDashboardPlugin {
    * @param {Compiler} compiler
    */
   apply(compiler) {
-    const FederationPlugin = compiler.options.plugins.find((plugin) => {
-      return plugin.constructor.name === "ModuleFederationPlugin";
-    });
+    const FederationPlugin = compiler.options.plugins.find(
+      this.findModuleFederationPlugin
+    );
     if (FederationPlugin) {
       this.FederationPluginOptions = Object.assign(
         {},
@@ -73,6 +85,24 @@ class FederationDashboardPlugin {
       }).apply(compiler);
     }
   }
+
+  findModuleFederationPlugin = (plugin) => {
+    const isModuleFederation =
+      plugin.constructor.name === "ModuleFederationPlugin";
+
+    if (!isModuleFederation) {
+      return;
+    }
+
+    if (!this._options.moduleFederationPluginFilter) {
+      return true;
+    }
+
+    return (
+      plugin._options.name ===
+      this._options.moduleFederationPluginFilter.remoteName
+    );
+  };
 
   parseModuleAst(compilation, callback) {
     const filePaths = [];

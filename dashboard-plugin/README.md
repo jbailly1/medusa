@@ -29,13 +29,14 @@ This will post the `ModuleFederationPlugin` metrics to the update endpoint at `h
 
 There are also other options:
 
-| Key            | Description                                                                             |
-| -------------- | --------------------------------------------------------------------------------------- |
-| dashboardURL   | The URL of the dashboard endpoint.                                                      |
-| metadata       | Any additional metadata you want to apply to this application for use in the dashboard. |
-| filename       | The file path where the dashboard data.                                                 |
-| standalone     | For use without ModuleFederationPlugin                                                  |
-| publishVersion | Used for versioned remotes. '1.0.0' will be used for each remote if not passed          |
+| Key                    | Description                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| dashboardURL           | The URL of the dashboard endpoint.                                                      |
+| metadata               | Any additional metadata you want to apply to this application for use in the dashboard. |
+| filename               | The file path where the dashboard data.                                                 |
+| standalone             | For use without ModuleFederationPlugin                                                  |
+| publishVersion         | Used for versioned remotes. '1.0.0' will be used for each remote if not passed          |
+| moduleFederationFilter | Used for take the right ModuleFederationPlugin                                          |
 
 ## Metadata
 
@@ -68,3 +69,21 @@ You can add whatever keys you want to `metadata`, but there are some keys that t
 This is useful when Module Federation is not used, options can be passed that are usually inferred from Module Federation Options
 
 - `name`: the name of the app, must be unique
+
+## Module Federation filter
+
+This paramater is _optional_ and tis specified as an object.
+
+```js
+plugins: [
+  ...new DashboardPlugin({
+    dashboardURL:
+      "https://federation-dashboard-alpha.vercel.app/api/update?token=writeToken",
+    moduleFederationFilter: {
+      remoteName: "home",
+    },
+  }),
+];
+```
+
+This is useful when you have multiple Module Federation plugins in the webpack config and you take the specific one in the dashboard.
