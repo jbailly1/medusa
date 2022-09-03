@@ -70,7 +70,7 @@ This is useful when Module Federation is not used, options can be passed that ar
 
 - `name`: the name of the app, must be unique
 
-## Module Federation filter
+## Module Federation Filter
 
 This paramater is _optional_ and tis specified as an object.
 
@@ -86,4 +86,4 @@ plugins: [
 ];
 ```
 
-This is useful when you have multiple Module Federation plugins in the webpack config and you take the specific one in the dashboard.
+This is useful when you have multiple Module Federation plugins in the webpack config and you want a specific one in the dashboard.
